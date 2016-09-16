@@ -320,6 +320,7 @@ class ChoiceType extends AbstractType
             'placeholder' => $placeholderDefault,
             'error_bubbling' => false,
             'compound' => $compound,
+            'pass_choice_data' => null,
             // The view data is always a string, even if the "data" option
             // is manually set to an object.
             // See https://github.com/symfony/symfony/pull/5582
@@ -340,6 +341,7 @@ class ChoiceType extends AbstractType
         $resolver->setAllowedTypes('choice_attr', array('null', 'array', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
         $resolver->setAllowedTypes('preferred_choices', array('array', '\Traversable', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
         $resolver->setAllowedTypes('group_by', array('null', 'callable', 'string', 'Symfony\Component\PropertyAccess\PropertyPath'));
+        $resolver->setAllowedTypes('pass_choice_data', array('null', 'bool'));
     }
 
     /**
@@ -400,6 +402,10 @@ class ChoiceType extends AbstractType
             $choiceOpts['required'] = false;
         } else {
             $choiceType = __NAMESPACE__.'\RadioType';
+        }
+        
+        if($option['pass_choice_data']) {
+            $choiceOpts['data'] = $choiceView->data;
         }
 
         $builder->add($name, $choiceType, $choiceOpts);
